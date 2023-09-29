@@ -1,0 +1,8 @@
+#!/bin/bash
+set -eo pipefail
+
+task_build() {
+  go build -o ./swiftbar.github/_cli ./swiftbar.github
+}
+
+source "${PROJECT_ROOT}/scripts/_cli.sh"
