@@ -70,7 +70,7 @@ func mainExec(input *Input) *Stack {
 	}
 	if len(myTopPRs) < 3 { // still less than 3 PRs, include my other PRs, max 3 PRs
 		myRecentPRs := sortPRs(skipPRs(filterMyOtherPRs(recentPRs), myTopPRs))
-		mergeLists(myTopPRs, myRecentPRs)
+		myTopPRs = mergeLists(myTopPRs, myRecentPRs)
 		if len(myTopPRs) > 3 {
 			myTopPRs = myTopPRs[:3]
 		}
