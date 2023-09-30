@@ -78,18 +78,27 @@ func mainExec(input *Input) *Stack {
 	myOthers := skipPRs(filterMyOtherPRs(recentPRs), myTopPRs)
 	stack := &Stack{TopPRs: myTopPRs, MyOthers: myOthers}
 	{
-		wg := sync.WaitGroup{}
+		wg, resultA, resultB := sync.WaitGroup{}, make([][]*HtmlPR, 4), make([][]*HtmlPR, 1)
 		wg.Add(4)
-		result := make([][]*HtmlPR, 4)
 		for page := 0; page < 4; page++ {
 			page := page
 			go func() {
 				defer func() { exitIfPanic(recover()) }()
-				result[page] = listGhPRsHtml(page)
+				resultA[page] = listGhPRsHtml(page, false)
+				wg.Done()
+			}()
+		}
+		wg.Add(1)
+		for page := 0; page < 1; page++ {
+			page := page
+			go func() {
+				defer func() { exitIfPanic(recover()) }()
+				resultB[page] = listGhPRsHtml(page, true)
 				wg.Done()
 			}()
 		}
 		wg.Wait()
+		result := mergeLists(resultA, resultB)
 		stack.Others = filterOtherPRs(recentPRs, result, stack.TopPRs, stack.MyOthers)
 	}
 	{
@@ -194,9 +203,11 @@ func filterOtherPRs(recentPRs []*PR, htmlPRs [][]*HtmlPR, excludes ...[]*PR) (ou
 		}
 		pr.Unread = htmlPR.Unread
 		switch {
-		case pr.UpdatedAt.After(otherPRsLatestTime):
+		case pr.State == "open" && pr.UpdatedAt.After(otherPRsOpenLatestTime):
 			out = append(out, pr)
-		case htmlPR.NComments > 0 && pr.UpdatedAt.After(otherPRsFreshTime):
+		case pr.State == "open" && htmlPR.NComments > 0 && pr.UpdatedAt.After(otherPRsFreshTime):
+			out = append(out, pr)
+		case pr.Merged && pr.UpdatedAt.After(otherPRsMergedLatestTime):
 			out = append(out, pr)
 		}
 	}

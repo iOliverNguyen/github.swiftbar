@@ -115,10 +115,13 @@ func queryGhPRHtml(number int) *HtmlPRDetails {
 	return out
 }
 
-func listGhPRsHtml(page int) (out []*HtmlPR) {
-	ghURL := fmt.Sprintf("%v/pulls", githubHtmlPath)
+func listGhPRsHtml(page int, close bool) (out []*HtmlPR) {
+	ghURL := fmt.Sprintf("%v/pulls?%v", githubHtmlPath, "q=is%3Apr")
+	if close {
+		ghURL += "+is%3Aclosed"
+	}
 	if page > 0 {
-		ghURL += fmt.Sprintf("?page=%v", page+1)
+		ghURL += fmt.Sprintf("&page=%v", page+1)
 	}
 	htmlBody := must(htmlRequest(ghURL))
 	doc := must(goquery.NewDocumentFromReader(bytes.NewReader(htmlBody)))

@@ -19,10 +19,11 @@ var htmlHeaders []string
 
 var timeout = 10 * time.Minute
 
-var topOpenPRsFreshTime = time.Now().Add(-3 * 24 * time.Hour)
 var topMergedPRsFreshTime = time.Now().Add(-1 * 24 * time.Hour)
+var topOpenPRsFreshTime = time.Now().Add(-3 * 24 * time.Hour)
 var myOtherPRsFreshTime = time.Now().Add(-7 * 24 * time.Hour)
-var otherPRsLatestTime = time.Now().Add(-3 * 24 * time.Hour)
+var otherPRsMergedLatestTime = time.Now().Add(-1 * 24 * time.Hour)
+var otherPRsOpenLatestTime = time.Now().Add(-3 * 24 * time.Hour)
 var otherPRsFreshTime = time.Now().Add(-7 * 24 * time.Hour)
 
 var checkLevels = map[string]int{
