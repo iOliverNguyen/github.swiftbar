@@ -31,30 +31,30 @@ func init() {
 		`user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36`,
 	}
 	checkLevels = map[string]int{
-		"build (>=1.19.2, go)":                   2,
-		"code-gen":                               1,
-		"integration-test (go, >=1.19.2)":        1,
-		"proto-generation":                       1,
-		"race-test (go, >=1.19.2)":               1,
-		"unit-test (go, >=1.19.2)":               2,
-		"Linter":                                 0,
-		"build (14.x)":                           0, // chat-server
-		"build (>=1.19.2, go/tenets)":            2,
-		"changes":                                0,
-		"idl-vendor-check":                       0,
-		"integration-test (go/tenets, >=1.19.2)": 1,
-		"lint (>=1.18.0, ubuntu-20.04)":          2,
-		"proto-breaking":                         1,
-		"proto-lint":                             2,
-		"race-test (go/tenets, >=1.19.2)":        1,
-		"unit-test (go/tenets, >=1.19.2)":        2,
+		"changes":                                   0,
+		"code-gen":                                  1,
+		"build (1.21, go)":                          2,
+		"build (1.21, go/tenets)":                   2,
+		"unit-test (1.21, go)":                      2,
+		"unit-test (1.21, go/tenets)":               2,
+		"integration-test (1.21, go)":               1,
+		"integration-test (1.21, go/tenets)":        1,
+		"unit-test-race-detector (1.21, go)":        1,
+		"unit-test-race-detector (1.21, go/tenets)": 1,
+		"proto-lint":                                2,
+		"proto-breaking":                            1,
+		"proto-generation":                          1,
+		"Test":                                      0, // python
+		"Lint Code Base":                            0,
+		"build (14.x)":                              0, // chat-server
+		"lint (1.21, ubuntu-latest)":                2,
 	}
 	importantChecks = []string{
-		"lint (>=1.18.0, ubuntu-20.04)",
-		"build (>=1.19.2, go)",
-		"unit-test (go, >=1.19.2)",
-		"build (>=1.19.2, go/tenets)",
-		"unit-test (go/tenets, >=1.19.2)",
+		"lint (1.21, ubuntu-latest)",
+		"build (1.21, go)",
+		"unit-test (1.21, go)",
+		"build (1.21, go/tenets)",
+		"unit-test (1.21, go/tenets)",
 		"proto-lint",
 	}
 	for _, k := range importantChecks {
