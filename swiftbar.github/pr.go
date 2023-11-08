@@ -127,7 +127,7 @@ func calcChecksLevel(checks []*PRCheck) {
 }
 
 func parseStack(s string) (out []int) {
-	reNumber := regexp.MustCompile(`[0-9]+`)
+	reNumber := regexp.MustCompile(`\b[0-9]+\b`)
 	numbers := reNumber.FindAllString(s, -1)
 	for _, number := range numbers {
 		out = append(out, must(strconv.Atoi(number)))
