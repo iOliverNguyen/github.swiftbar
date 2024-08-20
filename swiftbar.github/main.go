@@ -62,7 +62,7 @@ func main() {
 }
 
 func mainExec(input *Input) *Stack {
-	recentPRs := listGhPRs()
+	recentPRs := listGhPRs(maxPullRequestPages)
 	myTopPRs := filterStackedPRs(recentPRs, input.PRs)
 	if len(myTopPRs) < 3 { // less than 3 PRs, include my recent top PRs
 		myRecentPRs := sortPRs(skipPRs(filterMyRecentTopPRs(recentPRs), myTopPRs))

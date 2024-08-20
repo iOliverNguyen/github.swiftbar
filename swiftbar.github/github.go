@@ -4,12 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"golang.org/x/net/html"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/net/html"
 )
+
+const maxPullRequestPages = 3 // 3*100 = 300 PRs
 
 type PRResponse struct {
 	Number      int    `json:"number"`
@@ -56,18 +60,40 @@ func queryGhPR(number int) *PR {
 	return parsePRResponse(res)
 }
 
-func listGhPRs() (out []*PR) {
-	ghURL := fmt.Sprintf("%v/pulls?state=all&per_page=100", githubAPIPath)
-	jsonBody := must(httpRequest("GET", ghURL, nil))
+func listGhPRs(numPages int) (out []*PR) {
+	execList := func(page int) (out []*PR) {
+		ghURL := fmt.Sprintf("%v/pulls?state=all&per_page=100&page=%v", githubAPIPath, page+1)
+		jsonBody := must(httpRequest("GET", ghURL, nil))
 
-	var response []PRResponse
-	must(0, json.Unmarshal(jsonBody, &response))
-	for _, res := range response {
-		pr := parsePRResponse(res)
-		out = append(out, pr)
+		var response []PRResponse
+		must(0, json.Unmarshal(jsonBody, &response))
+		for _, res := range response {
+			pr := parsePRResponse(res)
+			out = append(out, pr)
+		}
+		debugf("--- PRs ---")
+		debugYaml(out)
+		return out
 	}
-	debugf("--- PRs ---")
-	debugYaml(out)
+
+	if numPages < 1 {
+		numPages = 1
+	}
+	var wg sync.WaitGroup
+	wg.Add(numPages)
+	outs := make([][]*PR, numPages)
+
+	for i := 0; i < numPages; i++ {
+		go func(i int) {
+			defer wg.Done()
+			outs[i] = execList(i)
+		}(i)
+	}
+	wg.Wait()
+
+	for _, o := range outs {
+		out = append(out, o...)
+	}
 	return out
 }
 
